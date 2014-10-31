@@ -42,7 +42,7 @@ public class LoginService
 		JSONObject json = new JSONObject();
 		String sysCode = (String)session.getAttribute("code");
 		session.removeAttribute("code");
-		if(sysCode.equals(code))
+		if(code.equals(sysCode))
 		{
 			List<Map<String,String>> list = loginDao.qryUserInfo(username);
 			if(ObjectCensor.checkListIsNull(list))

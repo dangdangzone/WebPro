@@ -38,9 +38,8 @@
 						<span>您好！ ${sessionScope.UserInfo.realName}  |
 							<a href="javascript:logout();">[退出]</a>
 						</span> |
-						<select id="themeswitchcombobox" class="easyui-combobox"
-							data-options="editable:false,panelHeight:'auto',onChange:onChangeTheme,formatter:themeInit">
-							<option value='default'>
+						<select id="themeswitchcombobox" class="easyui-combobox" data-options="editable:false,panelHeight:'auto',onChange:onChangeTheme,formatter:themeInit">
+							<option value='default' selected="selected">
 								Default
 							</option>
 							<option value='gray'>
@@ -59,18 +58,14 @@
 		</div>
 
 		<!-- 左侧菜单 -->
-		<div id="leftarea"
-			data-options="iconCls:'icons-other-house',region:'west',title:'加载中...',split:true,width:190">
-			<div id="leftmenu" class="easyui-accordion"
-				data-options="fit:true,border:false"></div>
+		<div id="leftarea" data-options="iconCls:'icons-other-house',region:'west',title:'加载中...',split:true,width:190">
+			<div id="leftmenu" class="easyui-accordion" data-options="fit:true,border:false"></div>
 		</div>
 
 		<!-- 内容 -->
 		<div id="mainarea" data-options="region:'center'">
-			<div id="pagetabs" class="easyui-tabs"
-				data-options="tabPosition:'bottom',fit:true,border:false,plain:false">
-				<div title="后台首页" href="/main.jsp"
-					data-options="cache:false"></div>
+			<div id="pagetabs" class="easyui-tabs" data-options="tabPosition:'bottom',fit:true,border:false,plain:false">
+				<div title="后台首页" href="/main.jsp" data-options="cache:false"></div>
 			</div>
 		</div>
 

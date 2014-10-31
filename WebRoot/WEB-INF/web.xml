@@ -29,7 +29,13 @@
 	</filter-mapping>
 
 
+	<mime-mapping> 
+		<extension>mp4</extension> 
+		<mime-type>video/mp4</mime-type> 
+	</mime-mapping> 
+	
+
 	<welcome-file-list>
-		<welcome-file>login.jsp</welcome-file>
+		<welcome-file>video/webm</welcome-file>
 	</welcome-file-list>
 </web-app>
