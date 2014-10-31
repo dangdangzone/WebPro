@@ -50,6 +50,11 @@ public class LoginController
 	{
 		ModelAndView model = new ModelAndView("login");
 		HttpSession session = request.getSession();
+		Map<String,String> map = (Map<String,String>)session.getAttribute("UserInfo");
+		if(map != null)
+		{
+			loginService.updateUserInfo(map, request);
+		}
 		session.removeAttribute("UserInfo");
 		return model;
 	}
@@ -77,10 +82,9 @@ public class LoginController
 		PrintWriter out = null;
 		try
 		{
-			HttpSession session = request.getSession();
 			response.setCharacterEncoding("utf-8");
 			out = response.getWriter();
-			String retVal = loginService.login(username , password , code , session);
+			String retVal = loginService.login(username , password , code , request);
 			out.write(retVal);
 		}
 		catch(Exception err)

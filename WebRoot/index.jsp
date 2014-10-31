@@ -12,7 +12,9 @@
 		<%@ include file="/common/formvalidator.jsp" %>
 	</head>
 	<body class="easyui-layout">
-
+		<c:if test="${empty sessionScope.UserInfo}">
+			<c:redirect url="/login.jsp" />
+		</c:if>
 		<!-- 头部 -->
 		<div id="toparea" data-options="region:'north',border:false,height:40">
 			<div id="topmenu" class="easyui-panel" data-options="fit:true,border:false">
@@ -97,7 +99,7 @@ $(function(){
 	});
 	$.messager.show({			
 		title:'登录提示',
-		msg:'您好！${sessionScope.UserInfo.realName}欢迎回来！<br/>最后登录时间：${sessionScope.UserInfo.lastDate}<br/>最后登录IP：${sessionScope.UserInfo.userIp}',
+		msg:'您好！${sessionScope.UserInfo.realName} 欢迎回来！<br/>最后登录时间：${sessionScope.UserInfo.lastDate}<br/>最后登录IP：${sessionScope.UserInfo.userIp}',
 		timeout:5000,
 		showType:'slide'
 	});

@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import net.sf.json.JSONArray;
@@ -18,6 +19,7 @@ import org.web.util.MD5Util;
 import org.web.util.ObjectCensor;
 import org.web.util.QryException;
 import org.web.util.StringUtil;
+import org.web.util.SysDate;
 
 @Service
 public class LoginService 
@@ -34,8 +36,9 @@ public class LoginService
 		return String.valueOf(randNum%10000);
 	}
 	
-	public String login(String username , String password , String code , HttpSession session) throws QryException, NoSuchAlgorithmException, UnsupportedEncodingException
+	public String login(String username , String password , String code , HttpServletRequest request) throws QryException, NoSuchAlgorithmException, UnsupportedEncodingException
 	{
+		HttpSession session = request.getSession();
 		JSONObject json = new JSONObject();
 		String sysCode = (String)session.getAttribute("code");
 		session.removeAttribute("code");
@@ -44,7 +47,7 @@ public class LoginService
 			List<Map<String,String>> list = loginDao.qryUserInfo(username);
 			if(ObjectCensor.checkListIsNull(list))
 			{
-				Map map = list.get(0);
+				Map<String,String> map = list.get(0);
 				String userPass = StringUtil.getMapKeyVal(map, "userPass");
 				if(MD5Util.validPassword(password, userPass))
 				{
@@ -118,5 +121,14 @@ public class LoginService
 			}
 		}
 		return json.toString();
+	}
+	
+	public void updateUserInfo(Map<String,String> map , HttpServletRequest request)
+	{
+		String ip = request.getRemoteAddr();
+		String currentDate = SysDate.getDate();
+		map.put("userIp", ip);
+		map.put("lastDate", currentDate);
+		loginDao.updateUserInfo(map);
 	}
 }
