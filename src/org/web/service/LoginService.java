@@ -85,16 +85,24 @@ public class LoginService
 		return menuList;
 	}
 	
-	public String menuLeft(String menuId) throws QryException
+	public String menuLeft(String menuId , Map<String,String> userMap) throws QryException
 	{
 		JSONArray json = new JSONArray();
 		List<Map<String,String>> menuList = menuDao.getSubMenuItem(menuId);
+		String userPriv = StringUtil.getMapKeyVal(userMap, "userPriv");
+		int userPrivByte = StringUtil.convertStr(userPriv);
 		for(int i = 0,n = menuList.size();i < n;i++)
 		{
 			Map map = menuList.get(i);
 			String parentMenuId = StringUtil.getMapKeyVal(map, "parentMenuId");
 			if(menuId.equals(parentMenuId))
 			{
+				String menuPriv = StringUtil.getMapKeyVal(map, "menuPriv");
+				int menuPrivByte = StringUtil.convertStr(menuPriv);
+				if((menuPrivByte & userPrivByte) == 0)
+				{
+					continue;
+				}
 				JSONObject node = new JSONObject();
 				String menuSubId = StringUtil.getMapKeyVal(map, "menuId");
 				String menuName = StringUtil.getMapKeyVal(map, "menuName");

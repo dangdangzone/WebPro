@@ -1010,4 +1010,24 @@ public class StringUtil {
     	}
     	return map;
     }
+    
+    public static int convertStr(String str)
+    {
+    	int num = 1;
+    	int pos = 1;
+    	for(int i = str.length()-1,n = 0;i >= 0;i--)
+    	{
+    		if(str.charAt(i) == '1')
+    		{
+    			num += pos;
+    		}
+    		pos <<= 1;
+    	}
+    	return num-1;
+    }
+    
+    public static void main(String[] args) {
+		System.out.println(convertStr("011001"));
+	}
+    
 }

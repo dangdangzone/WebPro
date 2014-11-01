@@ -101,14 +101,16 @@ public class LoginController
 	}
 	
 	@RequestMapping(params = "method=menuLeft")
-	public void menuLeft(String menuId , HttpServletResponse response)
+	public void menuLeft(String menuId , HttpServletResponse response , HttpServletRequest request)
 	{
 		PrintWriter out = null;
 		try
 		{
 			response.setCharacterEncoding("utf-8");
 			out = response.getWriter();
-			String retVal = loginService.menuLeft(menuId);
+			HttpSession session = request.getSession();
+			Map<String,String> userMap = (Map<String,String>)session.getAttribute("UserInfo");
+			String retVal = loginService.menuLeft(menuId , userMap);
 			out.write(retVal);
 		}
 		catch(Exception err)
