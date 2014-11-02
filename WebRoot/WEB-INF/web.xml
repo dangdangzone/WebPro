@@ -36,6 +36,6 @@
 	
 
 	<welcome-file-list>
-		<welcome-file>video/webm</welcome-file>
+		<welcome-file>login.jsp</welcome-file>
 	</welcome-file-list>
 </web-app>

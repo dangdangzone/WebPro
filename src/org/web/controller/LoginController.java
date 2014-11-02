@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.web.service.LoginService;
+import org.web.util.MD5Util;
 import org.web.util.QryException;
 import org.web.util.SecurityCodeCreater;
 
@@ -53,7 +56,7 @@ public class LoginController
 		Map<String,String> map = (Map<String,String>)session.getAttribute("UserInfo");
 		if(map != null)
 		{
-			loginService.updateUserInfo(map, request);
+			loginService.logoutUpdate(map, request);
 		}
 		session.removeAttribute("UserInfo");
 		return model;
@@ -116,6 +119,51 @@ public class LoginController
 		catch(Exception err)
 		{
 			err.printStackTrace();
+		}
+		finally
+		{
+			if(out != null)
+			{
+				out.close();
+			}
+		}
+	}
+	
+	@RequestMapping(params = "method=updateUserInfo")
+	public void updateUserInfo(String userPass , String realName , HttpServletResponse response , HttpServletRequest request)
+	{
+		PrintWriter out = null;
+		JSONObject json = new JSONObject();
+		try
+		{
+			response.setCharacterEncoding("utf-8");
+			out = response.getWriter();
+			HttpSession session = request.getSession();
+			Map<String,String> userMap = (Map<String,String>)session.getAttribute("UserInfo");
+			if(userMap != null)
+			{
+				if(userPass != null)
+				{
+					String pass = MD5Util.getEncryptedPwd(userPass);
+					userMap.put("userPass", pass);
+				}
+				if(realName != null)
+				{
+					userMap.put("realName", realName);
+				}
+				loginService.updateUserInfo(userMap);
+				json.put("status", 1);
+				json.put("info", "用户信息修改成功!");
+				session.setAttribute("UserInfo",userMap);
+			}
+			out.write(json.toString());
+		}
+		catch(Exception err)
+		{
+			err.printStackTrace();
+			json.put("status", 0);
+			json.put("info", "用户信息修改失败!");
+			out.write(json.toString());
 		}
 		finally
 		{

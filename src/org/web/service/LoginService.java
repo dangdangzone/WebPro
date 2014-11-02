@@ -51,10 +51,21 @@ public class LoginService
 				String userPass = StringUtil.getMapKeyVal(map, "userPass");
 				if(MD5Util.validPassword(password, userPass))
 				{
-					json.put("status", 1);
-					json.put("info", "登录成功");
-					json.put("url", "/login.do?method=showIndex");
-					session.setAttribute("UserInfo", map);
+					String userValid = StringUtil.getMapKeyVal(map, "userValid");
+					String userPriv = StringUtil.getMapKeyVal(map, "userPriv");
+					if("#".equals(userPriv) || "1".equals(userValid))
+					{
+						json.put("status", 1);
+						json.put("info", "登录成功");
+						json.put("url", "/login.do?method=showIndex");
+						session.setAttribute("UserInfo", map);
+					}
+					else
+					{
+						json.put("status", 0);
+						json.put("info", "账户已过期，请联系管理员");
+						json.put("url", "");
+					}
 				}
 				else
 				{
@@ -88,9 +99,13 @@ public class LoginService
 	public String menuLeft(String menuId , Map<String,String> userMap) throws QryException
 	{
 		JSONArray json = new JSONArray();
-		List<Map<String,String>> menuList = menuDao.getSubMenuItem(menuId);
 		String userPriv = StringUtil.getMapKeyVal(userMap, "userPriv");
-		int userPrivByte = StringUtil.convertStr(userPriv);
+		List<Map<String,String>> menuList = menuDao.getSubMenuItem(menuId , userPriv);
+		int userPrivByte = -1;
+		if(!"#".equals(userPriv))
+		{
+			userPrivByte = StringUtil.convertStr(userPriv);
+		}
 		for(int i = 0,n = menuList.size();i < n;i++)
 		{
 			Map map = menuList.get(i);
@@ -98,10 +113,13 @@ public class LoginService
 			if(menuId.equals(parentMenuId))
 			{
 				String menuPriv = StringUtil.getMapKeyVal(map, "menuPriv");
-				int menuPrivByte = StringUtil.convertStr(menuPriv);
-				if((menuPrivByte & userPrivByte) == 0)
+				if(userPrivByte != -1)
 				{
-					continue;
+					int menuPrivByte = StringUtil.convertStr(menuPriv);
+					if((menuPrivByte & userPrivByte) == 0)
+					{
+						continue;
+					}
 				}
 				JSONObject node = new JSONObject();
 				String menuSubId = StringUtil.getMapKeyVal(map, "menuId");
@@ -131,7 +149,12 @@ public class LoginService
 		return json.toString();
 	}
 	
-	public void updateUserInfo(Map<String,String> map , HttpServletRequest request)
+	public void updateUserInfo(Map<String,String> map)
+	{
+		loginDao.updateUserInfo(map);
+	}
+	
+	public void logoutUpdate(Map<String,String> map , HttpServletRequest request)
 	{
 		String ip = request.getRemoteAddr();
 		String currentDate = SysDate.getDate();

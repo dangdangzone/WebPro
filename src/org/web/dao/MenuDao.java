@@ -30,12 +30,18 @@ public class MenuDao {
 		return qryCenter.executeSqlByMapListWithTrans(query, new ArrayList());
 	}
 	
-	public List<Map<String,String>> getSubMenuItem(String menuId) throws QryException
+	public List<Map<String,String>> getSubMenuItem(String menuId , String userPriv) throws QryException
 	{
-		String query = "select * from vclass_menu start with parent_menu_id = ? connect by prior menu_id = parent_menu_id";
+		StringBuffer sb = new StringBuffer();
+		sb.append("select * from vclass_menu ");
+		if(!"#".equals(userPriv))
+		{
+			sb.append(" where menu_priv != '#' or menu_priv is null ");
+		}
+		sb.append(" start with parent_menu_id = ? connect by prior menu_id = parent_menu_id ");
 		ArrayList paramList = new ArrayList();
 		paramList.add(menuId);
-		return qryCenter.executeSqlByMapListWithTrans(query, paramList);
+		return qryCenter.executeSqlByMapListWithTrans(sb.toString(), paramList);
 	}
 	
 }

@@ -200,9 +200,10 @@ function openUrl(url, title){
 	}else{
 		$('#pagetabs').tabs('add',{
 			title: title,
-			href: url,
+			//href: url,
 			closable: true,
-			cache: false
+			cache: false,
+			content : '<iframe name="'+title+' "src="'+url+'" width="100%" height="100%" frameborder="0" scrolling="auto" ></iframe>'
 		});
 	}
 }

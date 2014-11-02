@@ -30,7 +30,7 @@ public class LoginDao {
 	
 	public List<Map<String , String>> qryUserInfo(String userName) throws QryException
 	{
-		String query = "select * from vclass_user where user_name = ? and user_state = '00A' ";
+		String query = "select t.user_id,t.user_name,t.user_pass,t.user_priv,t.real_name,t.user_ip,to_char(t.last_date,'yyyy-mm-dd HH:mi:ss') last_date,to_char(t.start_date,'yyyy-mm-dd HH:mi:ss') start_date,to_char(t.end_date,'yyyy-mm-dd HH:mi:ss') end_date,case when (sysdate>=start_date and sysdate<=end_date) then '1' else '0' end as user_valid from vclass_user t where user_name = ? and user_state = '00A'";
 		ArrayList paramList = new ArrayList();
 		paramList.add(userName);
 		return qryCenter.executeSqlByMapListWithTrans(query, paramList);
